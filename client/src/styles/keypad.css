@@ -1,0 +1,7 @@
+.keypad {
+  padding: 20px;
+  width: 250px;
+  display: flex;
+  flex-wrap: wrap;
+  float: left;
+}
