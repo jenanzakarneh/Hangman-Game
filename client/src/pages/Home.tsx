@@ -1,44 +1,44 @@
-import React, { KeyboardEvent, useEffect, useRef, ChangeEvent, useState } from 'react'
-import Keybad from '../components/Keypad';
-import Hangman from '../components/Hangman';
-import Word from '../components/Word';
-import '../styles/home.css'
-const Play = () => {
-    const divRef = useRef<HTMLDivElement>(null);
+import React, { ChangeEvent, useState } from "react";
+import "../styles/home.css";
+import { fetchNewGame } from "../network/game.api";
+import { useNavigate } from "react-router";
+const Home = () => {
+  const [wordLength, setWordLength] = useState<string>("5");
+  const navigate = useNavigate();
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setWordLength(event.target.value);
+  };
 
-    const [start, setStart] = useState(false);
-    const [wordLength, setWordLength] = useState<string>("7");
-    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setWordLength(event.target.value);
-    }
-    const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-        const pressedKey: string = event.key;
-        console.log('key', pressedKey, ' presserd');
-    }
-
-    useEffect(() => {//focus to enable capturing keyboard events 
-        if (divRef.current) {
-            divRef.current.focus();
-        }
-    }, [start]);
-    return (
-        <div className='home' >
-            {start && <div onKeyDown={handleKeyDown} tabIndex={-1} ref={divRef}>
-                <Word length={wordLength} />
-                <Hangman />
-                <Keybad />
-
-            </div>}
-            {!start && <div className='start'>
-                <button onClick={() => setStart(true)}> start the game</button>
-                <div>
-                    <label htmlFor="number-of-letters">Sellect Word Length</label>
-                    <input type='number' name='number-of-letters' min="3" max="7" onChange={handleChange} />
-                </div>
-            </div>}
-
+  return (
+    <div className="felx">
+      <div className="title">
+        <h1> Let's Play Hangman</h1>
+      </div>
+      <div className="start home">
+        <button
+          onClick={async () => {
+            const response = await fetchNewGame(parseInt(wordLength));
+            console.log("game id = ", response.gameId);
+            localStorage.setItem("activeGame", response.gameId);
+            navigate(`/game/${wordLength}`);
+          }}
+        >
+          {" "}
+          start the game
+        </button>
+        <div>
+          <label htmlFor="number-of-letters">Sellect Word Length</label>
+          <input
+            type="number"
+            name="number-of-letters"
+            min="3"
+            max="7"
+            onChange={handleChange}
+          />
         </div>
-    )
-}
+      </div>
+    </div>
+  );
+};
 
-export default Play
+export default Home;
