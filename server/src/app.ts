@@ -1,13 +1,21 @@
 import express, { Express, Request, Response, NextFunction } from "express";
 import gameRoutes from "./routes/game";
+import userRoutes from "./routes/user";
 import createHttpError, { isHttpError } from "http-errors";
 import morgan from "morgan";
 import cors from "cors";
+
+import passport from "passport";
+import { config } from "./passport";
 const app: Express = express();
+config(passport);
+
+app.use(passport.initialize());
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(cors());
 
+app.use("/", userRoutes);
 app.use("/game", gameRoutes);
 
 app.use((req, res, next) => {

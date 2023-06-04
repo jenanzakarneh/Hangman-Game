@@ -4,10 +4,11 @@ import Hangman from "../components/Hangman";
 import Keybad from "../components/Keypad";
 import "../styles/home.css";
 import { useParams } from "react-router-dom";
-import { fetchGuess } from "../network/game.api";
+import { fetchGuess } from "../network/api";
 import Guess from "../components/Guess";
 import { gameInput } from "../types/types";
 import { useNavigate } from "react-router-dom";
+
 const Game = ({ setWon, setLost }: gameInput) => {
   var { gameLength } = useParams();
   if (!gameLength) gameLength = "4";
@@ -20,8 +21,7 @@ const Game = ({ setWon, setLost }: gameInput) => {
     try {
       const response = await fetchGuess(letter);
       console.log("game over ?", response.gameOver);
-      // eslint-disable-next-line eqeqeq
-      if (response.index != -1) {
+      if (response.index !== -1) {
         word[parseInt(response.index)] = response.letter;
         setWord(word);
       } else setCurrentImage(currentImage + 1);

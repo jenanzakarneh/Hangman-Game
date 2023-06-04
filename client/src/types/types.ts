@@ -25,6 +25,11 @@ export interface endOfGameInput {
   won: boolean;
   lost: boolean;
 }
-export interface hangmanInput{
-  currentImage:number
+export interface hangmanInput {
+  currentImage: number;
+}
+export interface formData {
+  username?: string;
+  email: string;
+  password: string;
 }

@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useState } from "react";
 import "../styles/home.css";
-import { fetchNewGame } from "../network/game.api";
+import { fetchNewGame } from "../network/api";
 import { useNavigate } from "react-router";
 const Home = () => {
   const [wordLength, setWordLength] = useState<string>("5");
