@@ -2,10 +2,14 @@ import { RequestHandler } from "express";
 import { generateWordWithLength } from "../network/word";
 import GameModel from "../models/game";
 import createHttpError from "http-errors";
+import idFromTokenUtils from "../utilities/idFromTokenUtils";
 
 export const startNewGame: RequestHandler = async (req, res, next) => {
   try {
-    console.log("request params = ", req.params);
+    const header = req.headers.authorization;
+    const token = header?.split(" ")[1];
+    const userId = idFromTokenUtils(token);
+    console.log("userId = ", userId);
     const wordLength = req.params.length;
     if (!parseInt(wordLength))
       throw createHttpError(
@@ -16,19 +20,19 @@ export const startNewGame: RequestHandler = async (req, res, next) => {
     const newGame = await GameModel.create({
       length: wordLength,
       word: word,
+      userId: userId,
     });
     res.status(201).json({ ok: true, gameId: newGame._id });
   } catch (error) {
     next(error);
   }
 };
-
 export const geussThisLetter: RequestHandler = async (req, res, next) => {
   const { letter, id } = req.body;
   try {
     const game = await GameModel.findById(id).exec();
     if (!game) throw createHttpError(404, "Game not found");
-    if (game.hasEnded)
+    if (!game.isActive)
       throw createHttpError(410, "This game has reached its end ");
     let word = game.word;
     game.correctGuesses.forEach((g) => {
@@ -41,11 +45,11 @@ export const geussThisLetter: RequestHandler = async (req, res, next) => {
     } else game.correctGuesses.push(letter);
     game.guesses.push(letter);
     if (game.remainingGuesses === -1) {
-      game.hasEnded = true;
       game.remainingGuesses = 0;
+      game.isActive = false;
     }
     if (game.correctGuesses.length === word.length) {
-      game.hasEnded = true;
+      game.isActive = false;
     }
     const win = game.correctGuesses.length === word.length;
     const gameAfterGuess = await game.save();
@@ -55,7 +59,7 @@ export const geussThisLetter: RequestHandler = async (req, res, next) => {
       letter: letter,
       index: index,
       win: win,
-      isDone: gameAfterGuess.hasEnded,
+      isDone: !(gameAfterGuess.isActive),
     });
   } catch (error) {
     next(error);

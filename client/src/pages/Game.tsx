@@ -9,7 +9,7 @@ import Guess from "../components/Guess";
 import { gameInput } from "../types/types";
 import { useNavigate } from "react-router-dom";
 
-const Game = ({ setWon, setLost }: gameInput) => {
+const Game = ({ setWon }: gameInput) => {
   var { gameLength } = useParams();
   if (!gameLength) gameLength = "4";
   const [word, setWord] = useState(Array(gameLength).fill(" "));
@@ -20,13 +20,12 @@ const Game = ({ setWon, setLost }: gameInput) => {
     setGuess(letter);
     try {
       const response = await fetchGuess(letter);
-      console.log("game over ?", response.gameOver);
       if (response.index !== -1) {
         word[parseInt(response.index)] = response.letter;
         setWord(word);
       } else setCurrentImage(currentImage + 1);
       if (response.win) setWon(true);
-      else if (response.isDone) setLost(true);
+      else if (response.isDone) setWon(false);
       if (response.isDone) {
         localStorage.removeItem("activeGame");
         navigate("/endOfGame");
@@ -37,12 +36,11 @@ const Game = ({ setWon, setLost }: gameInput) => {
   };
   const handleKeyDown = (event: KeyboardEvent) => {
     const pressedKey: string = event.key;
-    // if (pressedKey) setGuess(pressedKey);
-    console.log("key", pressedKey, " presserd");
     makeGuess(pressedKey);
   };
   useEffect(() => {
     window.addEventListener<"keydown">("keydown", handleKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

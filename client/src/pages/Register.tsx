@@ -4,7 +4,6 @@ import "../styles/register.css";
 import { useForm } from "react-hook-form";
 import { formData } from "../types/types";
 import { fetchRegister } from "../network/api";
-//const bcrypt = require("bcryptjs");
 
 function Register() {
   const {
@@ -12,7 +11,6 @@ function Register() {
     handleSubmit,
     formState: { errors },
   } = useForm<formData>();
-  //const [response, setResponse] = useState({});
   const [err, setErr] = useState<string>();
   const navigate = useNavigate();
 

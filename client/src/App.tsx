@@ -9,27 +9,20 @@ import Login from "./pages/Login";
 
 function App() {
   const [won, setWon] = useState(false);
-  const [lost, setLost] = useState(false);
-  const autherized = localStorage.getItem("token");
+  const [authorized,setAuthorized]=useState(false)
   return (
     <Routes>
-      {autherized && <Route path="/home" element={<Home />} />}
+      {authorized && <Route path="/home" element={<Home />} />}
 
-      {autherized && (
-        <Route
-          path="/game/:gameLength"
-          element={<Game setWon={setWon} setLost={setLost} />}
-        />
+      {authorized && (
+        <Route path="/game/:gameLength" element={<Game setWon={setWon} />} />
       )}
-      {autherized && (
-        <Route
-          path="/endOfGame"
-          element={<EndOfGame won={won} lost={lost} />}
-        />
+      {authorized && (
+        <Route path="/endOfGame" element={<EndOfGame won={won} setAuthorized={setAuthorized} />} />
       )}
       <Route path="/register" element={<Register />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="*" element={<Login />} />
+      <Route path="/login" element={<Login setAuthorized={setAuthorized}/>} />
+      <Route path="*" element={<Login setAuthorized={setAuthorized} />} />
     </Routes>
   );
 }

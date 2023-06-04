@@ -5,7 +5,6 @@ import Letter from "./Letter";
 
 const Word = ({ length, word }: wordInput) => {
   const renderLetters = () => {
-    console.log("length = ", length);
     return Array.from({ length: length }, (_, index) => (
       <Letter key={index} value={word[index]} />
     ));

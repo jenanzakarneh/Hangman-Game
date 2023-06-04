@@ -18,12 +18,11 @@ export interface keypadInput {
 }
 export interface gameInput {
   setWon(won: boolean): any;
-  setLost(lost: boolean): any;
 }
 
 export interface endOfGameInput {
   won: boolean;
-  lost: boolean;
+  setAuthorized(auth: boolean): any;
 }
 export interface hangmanInput {
   currentImage: number;
@@ -32,4 +31,7 @@ export interface formData {
   username?: string;
   email: string;
   password: string;
+}
+export interface loginInput {
+  setAuthorized(auth: boolean): any;
 }

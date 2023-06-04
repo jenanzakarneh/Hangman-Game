@@ -9,7 +9,7 @@ const gameSchema = new Schema({
   remainingGuesses: { type: Number, default: 10 },
   isActive: { type: Boolean, default: true },
   hasEnded: { type: Boolean, default: false },
-  userId: { type: Number },
+  userId: { type: String },
   // active: { type: Boolean },
 });
 

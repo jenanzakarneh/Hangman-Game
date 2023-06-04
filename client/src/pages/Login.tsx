@@ -4,8 +4,9 @@ import "../styles/login.css";
 import { formData } from "../types/types";
 import { useForm } from "react-hook-form";
 import { fetchLogin } from "../network/api";
+import { loginInput } from "../types/types";
 
-function Login() {
+function Login({ setAuthorized }: loginInput) {
   const [error, setErr] = useState();
   const navigate = useNavigate();
   const {
@@ -19,6 +20,7 @@ function Login() {
     const response = await fetchLogin(data, setErr);
     if (response.token) {
       localStorage.setItem("token", response.token);
+      setAuthorized(true);
       navigate("/home");
     }
   };
