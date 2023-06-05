@@ -1,10 +1,11 @@
 import React, { ChangeEvent, useState } from "react";
 import "../styles/home.css";
-import { fetchNewGame } from "../network/api";
+import { fetchLastGame, fetchNewGame } from "../network/api";
 import { useNavigate } from "react-router";
 const Home = () => {
   const [wordLength, setWordLength] = useState<string>("5");
   const navigate = useNavigate();
+  const [error, setError] = useState();
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setWordLength(event.target.value);
   };
@@ -17,14 +18,23 @@ const Home = () => {
       <div className="start home">
         <button
           onClick={async () => {
-            const response = await fetchNewGame(parseInt(wordLength));
-            console.log("game id = ", response.gameId);
-            localStorage.setItem("activeGame", response.gameId);
+            console.log('clicked')
+            const lastGameLength = await fetchLastGame(setError);
+            if (lastGameLength) {
+              setWordLength(lastGameLength);
+              navigate(`/game/${wordLength}`);
+            }
+          }}
+        >
+          Your Last Game
+        </button>
+        <button
+          onClick={async () => {
+            await fetchNewGame(parseInt(wordLength));
             navigate(`/game/${wordLength}`);
           }}
         >
-          {" "}
-          start the game
+          Start New Game
         </button>
         <div>
           <label htmlFor="number-of-letters">Sellect Word Length</label>
@@ -37,6 +47,7 @@ const Home = () => {
           />
         </div>
       </div>
+      <div>{error}</div>
     </div>
   );
 };

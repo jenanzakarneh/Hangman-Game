@@ -1,4 +1,3 @@
-import { SetStateAction } from "react";
 import { formData } from "../types/types";
 
 const routeURL = "http://localhost:5000";
@@ -46,7 +45,7 @@ const createAuthHeader = () => {
   return token ? token : "No token";
 };
 export const fetchNewGame = async (length: number) => {
-  const response = await fetchData(`/game/${length}`, {
+  const response = await fetchData(`/game/create/${length}`, {
     method: "GET",
     headers: {
       Authorization: createAuthHeader(),
@@ -54,6 +53,20 @@ export const fetchNewGame = async (length: number) => {
   });
   const data = await response.json();
   return data;
+};
+export const fetchLastGame = async (setErr: any) => {
+  try {
+    const response = await fetchData("/game/activeGame", {
+      method: "GET",
+      headers: {
+        Authorization: createAuthHeader(),
+      },
+    });
+    const data = await response.json();
+    return data.length;
+  } catch (error: any) {
+    setErr(error.message);
+  }
 };
 
 export const fetchGuess = async (letter: string) => {

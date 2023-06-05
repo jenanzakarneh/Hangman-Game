@@ -8,7 +8,6 @@ const gameSchema = new Schema({
   incorrectGuesses: { type: [String] },
   remainingGuesses: { type: Number, default: 10 },
   isActive: { type: Boolean, default: true },
-  hasEnded: { type: Boolean, default: false },
   userId: { type: String },
   // active: { type: Boolean },
 });

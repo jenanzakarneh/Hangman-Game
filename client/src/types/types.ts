@@ -18,6 +18,7 @@ export interface keypadInput {
 }
 export interface gameInput {
   setWon(won: boolean): any;
+  setAuthorized(auth: boolean): any;
 }
 
 export interface endOfGameInput {

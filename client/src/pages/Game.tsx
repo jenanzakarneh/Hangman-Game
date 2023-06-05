@@ -9,7 +9,7 @@ import Guess from "../components/Guess";
 import { gameInput } from "../types/types";
 import { useNavigate } from "react-router-dom";
 
-const Game = ({ setWon }: gameInput) => {
+const Game = ({ setWon, setAuthorized }: gameInput) => {
   var { gameLength } = useParams();
   if (!gameLength) gameLength = "4";
   const [word, setWord] = useState(Array(gameLength).fill(" "));
@@ -23,12 +23,16 @@ const Game = ({ setWon }: gameInput) => {
       if (response.index !== -1) {
         word[parseInt(response.index)] = response.letter;
         setWord(word);
-      } else setCurrentImage(currentImage + 1);
-      if (response.win) setWon(true);
-      else if (response.isDone) setWon(false);
+      } else {
+        setCurrentImage(currentImage + 1);
+      }
       if (response.isDone) {
-        localStorage.removeItem("activeGame");
-        navigate("/endOfGame");
+        if (response.win) {
+          setWon(true);
+        } else {
+          setWon(false);
+        }
+        navigate("/endOfGme");
       }
     } catch (error) {
       console.log(error);
@@ -40,6 +44,9 @@ const Game = ({ setWon }: gameInput) => {
   };
   useEffect(() => {
     window.addEventListener<"keydown">("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -53,6 +60,15 @@ const Game = ({ setWon }: gameInput) => {
           <Guess guess={guess} />
         </div>
       </div>
+      <button
+        onClick={() => {
+          setAuthorized(false);
+          localStorage.clear();
+          navigate("/login");
+        }}
+      >
+        Logout
+      </button>
     </div>
   );
 };

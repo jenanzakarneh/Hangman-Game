@@ -3,6 +3,7 @@ import { generateWordWithLength } from "../network/word";
 import GameModel from "../models/game";
 import createHttpError from "http-errors";
 import idFromTokenUtils from "../utilities/idFromTokenUtils";
+import { checkLetterIndex } from "../utilities/wordUtils";
 
 export const startNewGame: RequestHandler = async (req, res, next) => {
   try {
@@ -17,6 +18,11 @@ export const startNewGame: RequestHandler = async (req, res, next) => {
         "Word length should be specified as a number in the request as url param"
       );
     const word = await generateWordWithLength(parseInt(wordLength));
+    await GameModel.updateOne(
+      { userId: userId, isActive: true },
+      { isActive: false }
+    );
+
     const newGame = await GameModel.create({
       length: wordLength,
       word: word,
@@ -28,39 +34,60 @@ export const startNewGame: RequestHandler = async (req, res, next) => {
   }
 };
 export const geussThisLetter: RequestHandler = async (req, res, next) => {
-  const { letter, id } = req.body;
+  const { letter } = req.body;
+  const header = req.headers.authorization;
+  const token = header?.split(" ")[1];
+  const userId = idFromTokenUtils(token);
   try {
-    const game = await GameModel.findById(id).exec();
+    const game = await GameModel.findOne({
+      userId: userId,
+      isActive: true,
+    });
     if (!game) throw createHttpError(404, "Game not found");
+
     if (!game.isActive)
       throw createHttpError(410, "This game has reached its end ");
-    let word = game.word;
-    game.correctGuesses.forEach((g) => {
-      word = word.replace(g, "0");
-    });
-    const index = word.indexOf(letter);
+    const index = checkLetterIndex(game, letter);
+    let win = false;
     if (index === -1) {
       game.incorrectGuesses.push(letter);
-      game.remainingGuesses--;
-    } else game.correctGuesses.push(letter);
+      game.remainingGuesses = game.remainingGuesses - 1;
+      game.isActive = !(game.remainingGuesses === 0);
+    } else {
+      game.correctGuesses.push(letter);
+      if (game.correctGuesses.length === game.length) {
+        win = true;
+        game.isActive = false;
+      }
+    }
     game.guesses.push(letter);
-    if (game.remainingGuesses === -1) {
-      game.remainingGuesses = 0;
-      game.isActive = false;
-    }
-    if (game.correctGuesses.length === word.length) {
-      game.isActive = false;
-    }
-    const win = game.correctGuesses.length === word.length;
-    const gameAfterGuess = await game.save();
 
+    const gameAfterGuess = await game.save();
     res.status(200).json({
-      ok: true,
-      letter: letter,
       index: index,
+      letter: letter,
       win: win,
-      isDone: !(gameAfterGuess.isActive),
+      isDone: !gameAfterGuess.isActive,
     });
+  } catch (error) {
+    next(error);
+  }
+};
+export const getActiveGame: RequestHandler = async (req, res, next) => {
+  const header = req.headers.authorization;
+  const token = header?.split(" ")[1];
+  const userId = idFromTokenUtils(token);
+  try {
+    const activeGame = await GameModel.findOneAndUpdate({
+      userId: userId,
+      isActive: true,
+      remainingGuesses: 10,
+      guesses: [],
+      incorrectGuesses: [],
+      correctGuesses: [],
+    });
+    if (!activeGame) throw createHttpError("404", "You do not have any active game.");
+    res.status(200).json({ length: activeGame?.length });
   } catch (error) {
     next(error);
   }
