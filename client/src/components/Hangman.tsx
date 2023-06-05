@@ -1,11 +1,16 @@
 import React from "react";
-import "../styles/hangman.css";
+//import "../styles/hangman.css";
+import { Image } from "@chakra-ui/react";
 import { hangmanInput } from "../types/types";
 const Hangman = ({ currentImage }: hangmanInput) => {
   return (
-    <div>
-      <img src={`../assets/hangman/${currentImage}.jpg`} alt="loading" />
-    </div>
+    <Image
+      rounded={"lg"}
+      h={"550"}
+      w={"350"}
+      src={`../assets/hangman/${currentImage}.jpg`}
+      alt="Loding"
+    />
   );
 };
 

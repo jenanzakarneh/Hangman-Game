@@ -1,13 +1,25 @@
 import { keyInput } from "../types/types";
-import "../styles/key.css";
+import { Box, Center } from "@chakra-ui/react";
 const Key = ({ letter, onClickKey }: keyInput) => {
   const clicked = () => {
     onClickKey(letter.toLowerCase());
   };
   return (
-    <button className="key" onClick={clicked}>
-      {letter}
-    </button>
+    <Box
+      onClick={clicked}
+      w={"50px"}
+      h={"50px"}
+      rounded={"md"}
+      backgroundColor={"white"}
+      border={"1px"}
+      color={"gray"}
+      mr={"3"}
+      mt={"3"}
+      pt={"3"}
+      shadow={"0px 0px 5px gray"}
+    >
+      <Center>{letter}</Center>
+    </Box>
   );
 };
 

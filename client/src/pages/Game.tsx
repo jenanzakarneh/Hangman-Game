@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import Word from "../components/Word";
 import Hangman from "../components/Hangman";
 import Keybad from "../components/Keypad";
-import "../styles/home.css";
 import { useParams } from "react-router-dom";
 import { fetchGuess } from "../network/api";
 import Guess from "../components/Guess";
 import { gameInput } from "../types/types";
 import { useNavigate } from "react-router-dom";
+import { Box, Button, Flex } from "@chakra-ui/react";
 
 const Game = ({ setWon, setAuthorized }: gameInput) => {
   var { gameLength } = useParams();
@@ -32,7 +32,7 @@ const Game = ({ setWon, setAuthorized }: gameInput) => {
         } else {
           setWon(false);
         }
-        navigate("/endOfGme");
+        navigate("/endOfGame");
       }
     } catch (error) {
       console.log(error);
@@ -51,25 +51,30 @@ const Game = ({ setWon, setAuthorized }: gameInput) => {
   }, []);
 
   return (
-    <div className="home">
-      <div>
-        <Word length={parseInt(gameLength)} word={word} />
-        <div className="horizantal-flex">
-          <Hangman currentImage={currentImage} />
-          <Keybad onClickKey={makeGuess} />
+    <Flex direction={"column"}>
+      <Word length={parseInt(gameLength)} word={word} />
+      <Flex justify={"space-around"} p={"20"}>
+        <Hangman currentImage={currentImage} />
+        <Keybad onClickKey={makeGuess} />
+        <Box >
           <Guess guess={guess} />
-        </div>
-      </div>
-      <button
-        onClick={() => {
-          setAuthorized(false);
-          localStorage.clear();
-          navigate("/login");
-        }}
-      >
-        Logout
-      </button>
-    </div>
+          <Button
+          mt={'250px'}
+          bgColor={'white'}
+          border={'1px'}
+          w={'150'}
+          color={'gray'}
+            onClick={() => {
+              setAuthorized(false);
+              localStorage.clear();
+              navigate("/login");
+            }}
+          >
+            Logout
+          </Button>
+        </Box>
+      </Flex>
+    </Flex>
   );
 };
 

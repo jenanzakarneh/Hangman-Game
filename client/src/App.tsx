@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { ChakraProvider } from "@chakra-ui/react";
 import { Routes, Route } from "react-router";
 import "./App.css";
 import Home from "./pages/Home";
@@ -11,31 +12,39 @@ function App() {
   const [won, setWon] = useState(false);
   const [authorized, setAuthorized] = useState(false);
   return authorized ? (
-    <Routes>
-      <Route path="/home" element={<Home />} />
-      <Route
-        path="/game/:gameLength"
-        element={<Game setWon={setWon} setAuthorized={setAuthorized} />}
-      />
-      <Route
-        path="/endOfGame"
-        element={<EndOfGame won={won} setAuthorized={setAuthorized} />}
-      />
-
-      <Route path="/register" element={<Register />} />
-      <Route path="/login" element={<Login setAuthorized={setAuthorized} />} />
-
-      <Route path="/" element={<Login setAuthorized={setAuthorized} />} />
-      {/* <Route path="*" element={<Login setAuthorized={setAuthorized} />} /> */}
-    </Routes>
+    <ChakraProvider>
+      <Routes>
+        <Route path="/home" element={<Home />} />
+        <Route
+          path="/game/:gameLength"
+          element={<Game setWon={setWon} setAuthorized={setAuthorized} />}
+        />
+        <Route
+          path="/endOfGame"
+          element={<EndOfGame won={won} setAuthorized={setAuthorized} />}
+        />
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/login"
+          element={<Login setAuthorized={setAuthorized} />}
+        />
+        <Route path="/" element={<Login setAuthorized={setAuthorized} />} />
+        <Route path="*" element={<Login setAuthorized={setAuthorized} />} />
+      </Routes>
+    </ChakraProvider>
   ) : (
-    <Routes>
-      <Route path="/register" element={<Register />} />
-      <Route path="/login" element={<Login setAuthorized={setAuthorized} />} />
-
-      <Route path="/" element={<Login setAuthorized={setAuthorized} />} />
-      {/* <Route path="*" element={<Login setAuthorized={setAuthorized} />} /> */}
-    </Routes>
+    <ChakraProvider>
+      <Routes>
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/login"
+          element={<Login setAuthorized={setAuthorized} />}
+        />
+         <Route path="/home" element={<Home />} />
+        <Route path="/" element={<Login setAuthorized={setAuthorized} />} />
+        <Route path="*" element={<Login setAuthorized={setAuthorized} />} />
+      </Routes>
+    </ChakraProvider>
   );
 }
 

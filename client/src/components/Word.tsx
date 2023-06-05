@@ -1,6 +1,7 @@
-import React from "react";
+
 import { wordInput } from "../types/types";
-import "../styles/word.css";
+import { Flex} from "@chakra-ui/react";
+
 import Letter from "./Letter";
 
 const Word = ({ length, word }: wordInput) => {
@@ -9,7 +10,10 @@ const Word = ({ length, word }: wordInput) => {
       <Letter key={index} value={word[index]} />
     ));
   };
-  return <div className="word">{renderLetters()}</div>;
+  return <Flex
+  w={'100%'}
+  justifyContent={'center'}
+  >{renderLetters()}</Flex>;
 };
 
 export default Word;

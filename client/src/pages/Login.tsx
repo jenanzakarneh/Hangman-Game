@@ -5,6 +5,8 @@ import { formData } from "../types/types";
 import { useForm } from "react-hook-form";
 import { fetchLogin } from "../network/api";
 import { loginInput } from "../types/types";
+import { Flex,Center,Heading } from "@chakra-ui/react";
+
 
 function Login({ setAuthorized }: loginInput) {
   const [error, setErr] = useState();
@@ -26,8 +28,14 @@ function Login({ setAuthorized }: loginInput) {
   };
 
   return (
-    <div className="center">
-      <h1>Login </h1>
+    <Flex direction={'column'} w={'30%'}p={'30px'} ml={'500'} 
+    boxShadow='2xl'
+    rounded={'xl'}
+    mt={'100'} border={'1px gray'}>
+      <Center>
+      <Heading as={"h1"}>Login</Heading>
+      </Center>
+      
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="txt-field">
           <input
@@ -71,7 +79,7 @@ function Login({ setAuthorized }: loginInput) {
           <div onClick={() => navigate("/register")}>Register</div>
         </div>
       </form>
-    </div>
+   </Flex>
   );
 }
 

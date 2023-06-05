@@ -1,10 +1,11 @@
-import React from "react";
+
 import Key from "./Key";
 import { keypadInput } from "../types/types";
-import "../styles/keypad.css";
+
+import { Flex } from "@chakra-ui/react";
 const Keybad = ({ onClickKey }: keypadInput) => {
   return (
-    <div className="keypad">
+    <Flex width={"250px"} wrap={"wrap"} >
       <Key letter="A" onClickKey={onClickKey} />
       <Key letter="B" onClickKey={onClickKey} />
       <Key letter="C" onClickKey={onClickKey} />
@@ -31,7 +32,7 @@ const Keybad = ({ onClickKey }: keypadInput) => {
       <Key letter="X" onClickKey={onClickKey} />
       <Key letter="Y" onClickKey={onClickKey} />
       <Key letter="Z" onClickKey={onClickKey} />
-    </div>
+    </Flex>
   );
 };
 

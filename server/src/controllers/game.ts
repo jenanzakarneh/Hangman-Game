@@ -78,15 +78,20 @@ export const getActiveGame: RequestHandler = async (req, res, next) => {
   const token = header?.split(" ")[1];
   const userId = idFromTokenUtils(token);
   try {
-    const activeGame = await GameModel.findOneAndUpdate({
-      userId: userId,
-      isActive: true,
-      remainingGuesses: 10,
-      guesses: [],
-      incorrectGuesses: [],
-      correctGuesses: [],
-    });
-    if (!activeGame) throw createHttpError("404", "You do not have any active game.");
+    const activeGame = await GameModel.findOneAndUpdate(
+      {
+        userId: userId,
+        isActive: true,
+      },
+      {
+        remainingGuesses: 10,
+        guesses: [],
+        incorrectGuesses: [],
+        correctGuesses: [],
+      }
+    );
+    if (!activeGame)
+      throw createHttpError("404", "You do not have any active game.");
     res.status(200).json({ length: activeGame?.length });
   } catch (error) {
     next(error);

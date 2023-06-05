@@ -4,6 +4,7 @@ import "../styles/register.css";
 import { useForm } from "react-hook-form";
 import { formData } from "../types/types";
 import { fetchRegister } from "../network/api";
+import { Box, Center, Flex, Heading } from "@chakra-ui/react";
 
 function Register() {
   const {
@@ -21,8 +22,13 @@ function Register() {
   };
 
   return (
-    <div className="center">
-      <h1>Register</h1>
+    <Flex direction={'column'} w={'30%'}p={'30px'} ml={'500'} 
+    boxShadow='2xl'
+    rounded={'xl'}
+    mt={'100'} border={'1px gray'}>
+      <Center>
+      <Heading as={"h1"}>Rgister</Heading>
+      </Center>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="txt-field">
           <input
@@ -82,7 +88,7 @@ function Register() {
         </div>
       </form>
       <div className="error-mssg">{err}</div>
-    </div>
+    </Flex>
   );
 }
 
