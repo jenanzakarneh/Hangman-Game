@@ -24,7 +24,7 @@ const Game = ({ setWon, setAuthorized }: gameInput) => {
         word[parseInt(response.index)] = response.letter;
         setWord(word);
       } else {
-        setCurrentImage(currentImage + 1);
+        setCurrentImage(response.currentImage);
       }
       if (response.isDone) {
         if (response.win) {
@@ -42,6 +42,7 @@ const Game = ({ setWon, setAuthorized }: gameInput) => {
     const pressedKey: string = event.key;
     makeGuess(pressedKey);
   };
+
   useEffect(() => {
     window.addEventListener<"keydown">("keydown", handleKeyDown);
     return () => {
@@ -56,14 +57,14 @@ const Game = ({ setWon, setAuthorized }: gameInput) => {
       <Flex justify={"space-around"} p={"20"}>
         <Hangman currentImage={currentImage} />
         <Keybad onClickKey={makeGuess} />
-        <Box >
+        <Box>
           <Guess guess={guess} />
           <Button
-          mt={'250px'}
-          bgColor={'white'}
-          border={'1px'}
-          w={'150'}
-          color={'gray'}
+            mt={"250px"}
+            bgColor={"white"}
+            border={"1px"}
+            w={"150"}
+            color={"gray"}
             onClick={() => {
               setAuthorized(false);
               localStorage.clear();

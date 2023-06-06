@@ -68,6 +68,7 @@ export const geussThisLetter: RequestHandler = async (req, res, next) => {
       letter: letter,
       win: win,
       isDone: !gameAfterGuess.isActive,
+      currentImage:10- gameAfterGuess.remainingGuesses
     });
   } catch (error) {
     next(error);
