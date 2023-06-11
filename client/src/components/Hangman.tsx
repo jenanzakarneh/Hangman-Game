@@ -6,8 +6,8 @@ const Hangman = ({ currentImage }: hangmanInput) => {
   return (
     <Image
       rounded={"lg"}
-      h={"550"}
-      w={"350"}
+      h={"450"}
+      w={"250"}
       src={`../assets/hangman/${currentImage}.jpg`}
       alt="Loding"
     />

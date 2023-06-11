@@ -1,81 +1,51 @@
-import  { ChangeEvent, useState } from "react";
-import { fetchLastGame, fetchNewGame } from "../network/api";
-import { useNavigate } from "react-router";
-import { Box, Button, Center, Flex, Heading, Input } from "@chakra-ui/react";
-const Home = () => {
-  const [wordLength, setWordLength] = useState<string>("5");
-  const navigate = useNavigate();
+import { useEffect, useState } from "react";
+import { fetchLastGame } from "../network/api";
+import { Box } from "@chakra-ui/react";
+import Header from "../components/Header";
+import StartNewGame from "../components/StartNewGame";
+import { homeInput } from "../types/types";
+import Game from "../components/Game";
+const Home = ({ setWon, setAuthorized }: homeInput) => {
+  const [wordLength, setWordLength] = useState<string>("0");
+  const [word, setWord] = useState(Array(wordLength).fill(" "));
+  const [currentImage, setCurrentImage] = useState(0);
   const [error, setError] = useState("");
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setWordLength(event.target.value);
-  };
-  const lastGameClicked = async () => {
-    const lastGameLength = await fetchLastGame(setError);
-    if (lastGameLength) {
-      setWordLength(lastGameLength);
-      navigate(`/game/${wordLength}`);
+  const [restart, setRestart] = useState(false);
+  const fetchLastActiveGame = async () => {
+    const lastGame = await fetchLastGame(setError);
+    if (lastGame) {
+      setWordLength(lastGame.length);
+      setWord(lastGame.guessed.split(""));
+      setCurrentImage(lastGame.currentImage);
+      setError("");
     }
   };
-  const newGameClicked = async () => {
-    await fetchNewGame(parseInt(wordLength));
-    navigate(`/game/${wordLength}`);
-  };
 
+  useEffect(() => {
+    fetchLastActiveGame();
+  }, []);
+
+  useEffect(() => {
+    fetchLastActiveGame();
+  }, [restart]);
   return (
-    <Flex
-      direction={"column"}
-      p={"30px"}
-      m={"50"}
-      justify={"space-around"}
-      h={"900"}
-      color={"gray"}
-    >
-      <Center>
-        <Heading as={"h1"}>Let's Play Hangaman</Heading>
-      </Center>
-
-      <Box textAlign={'center'}>
-        <Center justifyContent={"space-around"}>
-          <Button
-            onClick={lastGameClicked}
-            size={"lg"}
-            bg={"gray"}
-            color={"white"}
-          >
-            Your Last Game
-          </Button>
-          <Button
-            onClick={newGameClicked}
-            size={"lg"}
-            bg={"gray"}
-            color={"white"}
-          >
-            {" "}
-            Start New Game
-          </Button>
-          <Center>
-        <label style={{ color: "gray" }} htmlFor="number-of-letters">
-          Sellect Word Length
-        </label>
-        <Input
-          border={"1px"}
-          type="number"
-          name="number-of-letters"
-          min={"3"}
-          max={"7"}
-          ml={"10"}
-          onChange={handleChange}
-          size={"lg"}
-          w={"auto"}
-        ></Input>
-      </Center>
-        </Center>
-      </Box>
-        <Box mt={'10'}  fontSize={'2xl'} color={"red"} textAlign={'center'}>
-          {error}
-        </Box>
-    
-    </Flex>
+    <div>
+      <Header setAuthorized={setAuthorized} />
+      {wordLength !== "0" ? (
+        <Game
+          setWon={setWon}
+          setAuthorized={setAuthorized}
+          gameLength={wordLength}
+          currentImage={currentImage}
+          setCurrentImage={setCurrentImage}
+          word={word}
+          setWord={setWord}
+        />
+      ) : (
+        <StartNewGame setRestart={setRestart} />
+      )}
+      <Box color={"red"}> {error}</Box>
+    </div>
   );
 };
 

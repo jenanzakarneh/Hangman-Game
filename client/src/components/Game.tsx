@@ -1,19 +1,24 @@
 import React, { useState, useEffect } from "react";
-import Word from "../components/Word";
-import Hangman from "../components/Hangman";
-import Keybad from "../components/Keypad";
-import { useParams } from "react-router-dom";
+import Word from "./Word";
+import Hangman from "./Hangman";
+import Keybad from "./Keypad";
 import { fetchGuess } from "../network/api";
-import Guess from "../components/Guess";
+import Guess from "./Guess";
 import { gameInput } from "../types/types";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, Flex } from "@chakra-ui/react";
+import { Center, Flex } from "@chakra-ui/react";
 
-const Game = ({ setWon, setAuthorized }: gameInput) => {
-  var { gameLength } = useParams();
+const Game = ({
+  setWon,
+  setAuthorized,
+  gameLength,
+  currentImage,
+  setCurrentImage,
+  word,
+  setWord,
+}: gameInput) => {
   if (!gameLength) gameLength = "4";
-  const [word, setWord] = useState(Array(gameLength).fill(" "));
-  const [currentImage, setCurrentImage] = useState(0);
+
   const [guess, setGuess] = useState(" ");
   const navigate = useNavigate();
   const makeGuess = async (letter: string) => {
@@ -21,7 +26,8 @@ const Game = ({ setWon, setAuthorized }: gameInput) => {
     try {
       const response = await fetchGuess(letter);
       if (response.index !== -1) {
-        word[parseInt(response.index)] = response.letter;
+        var myWord = word;
+        myWord[parseInt(response.index)] = response.letter;
         setWord(word);
       } else {
         setCurrentImage(response.currentImage);
@@ -54,26 +60,12 @@ const Game = ({ setWon, setAuthorized }: gameInput) => {
   return (
     <Flex direction={"column"}>
       <Word length={parseInt(gameLength)} word={word} />
-      <Flex justify={"space-around"} p={"20"}>
+      <Flex justify={"space-between"} pl={"20"} pr={"20"} pb={"10"}>
         <Hangman currentImage={currentImage} />
-        <Keybad onClickKey={makeGuess} />
-        <Box>
+        <Center>
           <Guess guess={guess} />
-          <Button
-            mt={"250px"}
-            bgColor={"white"}
-            border={"1px"}
-            w={"150"}
-            color={"gray"}
-            onClick={() => {
-              setAuthorized(false);
-              localStorage.clear();
-              navigate("/login");
-            }}
-          >
-            Logout
-          </Button>
-        </Box>
+        </Center>
+        <Keybad onClickKey={makeGuess} />
       </Flex>
     </Flex>
   );

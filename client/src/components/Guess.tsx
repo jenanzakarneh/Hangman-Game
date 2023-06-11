@@ -4,12 +4,11 @@ import { Box } from "@chakra-ui/react";
 const Guess = ({ guess }: guessInput) => {
   return (
     <Box
-      w={"200px"}
-      h={"200"}
+      w={"150px"}
+      h={"250"}
       rounded={"md"}
       fontSize={"150px"}
       shadow={"0px 0px 10px gray"}
-      textAlign={'center'}
     >
       {guess.toLocaleUpperCase()}
     </Box>

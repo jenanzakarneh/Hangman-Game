@@ -4,6 +4,7 @@ import GameModel from "../models/game";
 import createHttpError from "http-errors";
 import idFromTokenUtils from "../utilities/idFromTokenUtils";
 import { checkLetterIndex } from "../utilities/wordUtils";
+import { getGuessedLetters } from "../utilities/getWordUtils";
 
 export const startNewGame: RequestHandler = async (req, res, next) => {
   try {
@@ -68,7 +69,7 @@ export const geussThisLetter: RequestHandler = async (req, res, next) => {
       letter: letter,
       win: win,
       isDone: !gameAfterGuess.isActive,
-      currentImage:10- gameAfterGuess.remainingGuesses
+      currentImage: 10 - gameAfterGuess.remainingGuesses,
     });
   } catch (error) {
     next(error);
@@ -79,21 +80,23 @@ export const getActiveGame: RequestHandler = async (req, res, next) => {
   const token = header?.split(" ")[1];
   const userId = idFromTokenUtils(token);
   try {
-    const activeGame = await GameModel.findOneAndUpdate(
-      {
-        userId: userId,
-        isActive: true,
-      },
-      {
-        remainingGuesses: 10,
-        guesses: [],
-        incorrectGuesses: [],
-        correctGuesses: [],
-      }
-    );
+    const activeGame = await GameModel.findOne({
+      userId: userId,
+      isActive: true,
+    });
     if (!activeGame)
       throw createHttpError("404", "You do not have any active game.");
-    res.status(200).json({ length: activeGame?.length });
+    const guessedLetters = getGuessedLetters(
+      activeGame.word,
+      activeGame.correctGuesses
+    );
+    res
+      .status(200)
+      .json({
+        length: activeGame?.length,
+        guessed: guessedLetters,
+        currentImage: 10 - activeGame.remainingGuesses,
+      });
   } catch (error) {
     next(error);
   }

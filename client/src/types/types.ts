@@ -19,8 +19,16 @@ export interface keypadInput {
 export interface gameInput {
   setWon(won: boolean): any;
   setAuthorized(auth: boolean): any;
+  gameLength: string;
+  currentImage: number;
+  setCurrentImage(currentImage: number): any;
+  word: string[];
+  setWord(wod: string[]): any;
 }
-
+export interface homeInput {
+  setWon(won: boolean): any;
+  setAuthorized(auth: boolean): any;
+}
 export interface endOfGameInput {
   won: boolean;
   setAuthorized(auth: boolean): any;
@@ -35,4 +43,10 @@ export interface formData {
 }
 export interface loginInput {
   setAuthorized(auth: boolean): any;
+}
+export interface headerInput {
+  setAuthorized(auth: boolean): void;
+}
+export interface startNewGameInput{
+  setRestart?(r:boolean):any
 }

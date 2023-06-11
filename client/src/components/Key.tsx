@@ -11,10 +11,8 @@ const Key = ({ letter, onClickKey }: keyInput) => {
       h={"50px"}
       rounded={"md"}
       backgroundColor={"white"}
-      border={"1px"}
       color={"gray"}
-      mr={"3"}
-      mt={"3"}
+      mr={'3'}
       pt={"3"}
       shadow={"0px 0px 5px gray"}
     >

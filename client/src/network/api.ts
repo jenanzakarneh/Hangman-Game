@@ -63,7 +63,7 @@ export const fetchLastGame = async (setErr: any) => {
       },
     });
     const data = await response.json();
-    return data.length;
+    return data;
   } catch (error: any) {
     setErr(error.message);
   }
